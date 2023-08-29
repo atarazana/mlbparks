@@ -61,7 +61,7 @@ public class MongoDBConnection {
 
         if (configError) throw new RuntimeException("Error in configuration");
         System.out.println("DB_HOST=" + dbHost);
-        System.out.println("DB_PORT=" + dbUsername);
+        System.out.println("DB_PORT=" + dbPort);
         System.out.println("DB_USERNAME=" + dbUsername);
         System.out.println("DB_PASSWORD=" + dbPassword);
         System.out.println("DB_NAME=" + dbName);
@@ -78,7 +78,7 @@ public class MongoDBConnection {
      * Load from embedded list of parks using FILENAME
      */
     public List<Document> loadParks() {
-        System.out.println("[DEBUG] MongoDBConnection.loadParks()");
+        System.out.println("[DEBUG] MongoDBConnection.loadParks() from " + FILENAME);
 
         List<Document> docs = new ArrayList<Document>();
 
@@ -92,11 +92,16 @@ public class MongoDBConnection {
 
 
     public List<Document> loadParks(String fileLocation) {
+        System.out.println("[DEBUG] fileLocation -> " + fileLocation);
         System.out.println("[DEBUG] MongoDBConnection.loadParks(" + fileLocation + ")");
 
         List<Document> docs = new ArrayList<Document>();
         try {
-            docs.addAll(loadParks(new FileInputStream(new File(fileLocation))));
+            File loadFile = new File(fileLocation);
+            System.out.println("[DEBUG] loadFile " + loadFile);
+            FileInputStream fis = new FileInputStream(loadFile);
+            System.out.println("[DEBUG] fis " + fis);
+            docs.addAll(loadParks(fis));
         } catch (Exception e) {
             e.printStackTrace();
         }
