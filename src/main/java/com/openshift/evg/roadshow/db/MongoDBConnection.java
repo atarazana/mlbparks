@@ -115,9 +115,13 @@ public class MongoDBConnection {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
         try {
+            System.out.println("[DEBUG] about to start reading file");
             while ((currentLine = in.readLine()) != null) {
-                docs.add(Document.parse(currentLine.toString()));
+                String _line = currentLine.toString();
+                System.out.println("[DEBUG] line " + _line);
+                docs.add(Document.parse());
             }
+            System.out.println("[DEBUG] finished reading file");
         } catch (Exception e) {
             e.printStackTrace();
         }
