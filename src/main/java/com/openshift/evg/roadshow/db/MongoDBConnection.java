@@ -2,6 +2,7 @@ package com.openshift.evg.roadshow.db;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
@@ -66,9 +67,14 @@ public class MongoDBConnection {
         System.out.println("DB_PASSWORD=" + dbPassword);
         System.out.println("DB_NAME=" + dbName);
 
-        creds.add(MongoCredential.createCredential(dbUsername, dbName, dbPassword.toCharArray()));
+        // creds.add(MongoCredential.createCredential(dbUsername, dbName, dbPassword.toCharArray()));
 
-        MongoClient mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.valueOf(dbPort)), creds);
+        // MongoClient mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.valueOf(dbPort)), creds);
+        // MongoDatabase database = mongoClient.getDatabase(dbName);
+
+        String mongoURI = "mongodb://" + dbUsername + ":" + dbPassword + "@" + dbHost + ":" + dbPort + "/" + dbName;
+        System.out.println("[INFO] Connection string: " + mongoURI);
+        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
         MongoDatabase database = mongoClient.getDatabase(dbName);
 
         return database;
