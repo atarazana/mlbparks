@@ -138,10 +138,13 @@ public class MongoDBConnection {
 
 
     public void init(MongoDatabase database, List<Document> parks) {
-        System.out.println("[DEBUG] MongoDBConnection.init(...)");
-
+        System.out.println("[DEBUG] >>> MongoDBConnection.init(...)");
+        System.out.println("[DEBUG] parks: " + parks.size());
+        System.out.println("[DEBUG] collection name: " + COLLECTION);
+        
         MongoCollection<Document> collection = database.getCollection(COLLECTION);
-
+        System.out.println("[DEBUG] collection: " + collection);
+        
         System.out.println("Items before insert: " + collection.count());
         if (collection.count() != 0) {
             collection.drop();
@@ -150,6 +153,7 @@ public class MongoDBConnection {
         }
         collection.insertMany(parks);
         System.out.println("Items after insert: " + collection.count());
+        System.out.println("[DEBUG] <<< MongoDBConnection.init(...)");
     }
 
     public long sizeInDB(MongoDatabase database) {
