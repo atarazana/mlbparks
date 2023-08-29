@@ -119,7 +119,7 @@ public class MongoDBConnection {
             while ((currentLine = in.readLine()) != null) {
                 String _line = currentLine.toString();
                 System.out.println("[DEBUG] line " + _line);
-                docs.add(Document.parse());
+                docs.add(Document.parse(_line));
             }
             System.out.println("[DEBUG] finished reading file");
         } catch (Exception e) {
