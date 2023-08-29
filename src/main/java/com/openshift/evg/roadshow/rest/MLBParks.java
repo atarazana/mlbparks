@@ -36,6 +36,7 @@ public class MLBParks {
             con.init(db, parks);
             return "Items inserted in database: " + con.sizeInDB(db);
         }catch(Exception e){
+            e.printStackTrace();
             System.out.println("[ERROR] Connecting to database");
         }
         return "0 Items inserted in database. Error connecting";
