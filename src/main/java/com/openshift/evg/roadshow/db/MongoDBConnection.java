@@ -151,12 +151,12 @@ public class MongoDBConnection {
         MongoCollection<Document> collection = database.getCollection(COLLECTION);
         System.out.println("[DEBUG] collection: " + collection);
         
-        System.out.println("Items before insert: " + collection.count());
-        if (collection.count() != 0) {
-            collection.drop();
-            System.out.println("Items droped");
-            System.out.println("Items after drop: " + collection.count());
-        }
+        // System.out.println("Items before insert: " + collection.count());
+        // if (collection.count() != 0) {
+        //     collection.drop();
+        //     System.out.println("Items droped");
+        //     System.out.println("Items after drop: " + collection.count());
+        // }
         collection.insertMany(parks);
         System.out.println("Items after insert: " + collection.count());
         System.out.println("[DEBUG] <<< MongoDBConnection.init(...)");
