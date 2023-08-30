@@ -303,7 +303,7 @@ objects:
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      app.openshift.io/vcs-uri: https://github.com/openshift-roadshow/mlbparks.git
+      app.openshift.io/vcs-uri: https://github.com/atarazana/mlbparks.git
       app.openshift.io/vcs-ref: master
       app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${MONGODB_APPLICATION_NAME}"}]'
     labels:
