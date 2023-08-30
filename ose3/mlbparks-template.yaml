@@ -7,25 +7,13 @@ metadata:
     iconClass: icon-eap
     description: >-
       Application template MLBParks backend running on Wildfly and using
-      mongodb. This template deploys a Parksmap backend showing
-      you where some Major League Baseball (MLB) parks are. This template uses Java
-      and a Mongodb. After deployment you should execute this command in the terminal
-      window of mongodb-mlbparks:
-      mongosh -u admin -p secret --authenticationDatabase 
-      admin --eval 'use mlbparksapp' --eval 'db.createUser({user: "mlbparksapp", pwd: 
-      "keepsafe", roles: [{ role: "dbAdmin", db: "mlbparksapp" },{ role: "readWrite", 
-      db: "mlbparksapp" }]})' --quiet
+      mongodb. Mongodb Deployment executes a script to create mlbparksmap database.
     openshift.io/display-name: MLBparks
     openshift.io/long-description: >-
       Application template MLBParks backend running on Wildfly and using
       mongodb. This template deploys a Parksmap backend showing
       you where some Major League Baseball (MLB) parks are. This template uses Java
-      and a Mongodb. After deployment you should execute this command in the terminal
-      window of mongodb-mlbparks:
-      mongosh -u admin -p secret --authenticationDatabase 
-      admin --eval 'use mlbparksapp' --eval 'db.createUser({user: "mlbparksapp", pwd: 
-      "keepsafe", roles: [{ role: "dbAdmin", db: "mlbparksapp" },{ role: "readWrite", 
-      db: "mlbparksapp" }]})' --quiet
+      and a Mongodb.
     openshift.io/provider-display-name: OpenShift evangelist team
     tags: roadshow,java,springboot,parksmap-backend
 labels:
@@ -141,6 +129,21 @@ objects:
       deployment: ${MONGODB_APPLICATION_NAME}
     type: ClusterIP
     sessionAffinity: None
+# - kind: ConfigMap
+#   apiVersion: v1
+#   metadata:
+#     name: mongo-init-scripts
+#   data:
+#     init.sh: |
+#       db = db.getSiblingDB('$3');
+#       db.createUser({
+#         user: '$1',
+#         pwd: '$2',
+#         roles: [
+#           { role: 'readWrite', db: '$3' },
+#           { role: 'dbAdmin', db: '$3' }
+#         ]
+#       });
 - kind: Deployment
   apiVersion: apps/v1
   metadata:
@@ -150,7 +153,7 @@ objects:
     name: ${MONGODB_APPLICATION_NAME}
     labels:
       app: workshop
-      app.kubernetes.io/part-of: workshop
+      app.kubernetes.io/part-of: mlbparks
       app.kubernetes.io/instance: ${MONGODB_APPLICATION_NAME}
       app.kubernetes.io/component: ${MONGODB_APPLICATION_NAME}
       app.openshift.io/runtime: mongodb
@@ -174,6 +177,9 @@ objects:
             emptyDir: {}
           - name: mongodb-2
             emptyDir: {}
+          - name: init-scripts
+            configMap:
+              name: mongo-init-scripts
         containers:
           - resources: {}
             terminationMessagePath: /dev/termination-log
@@ -189,15 +195,44 @@ objects:
                   secretKeyRef:
                     name: ${MONGODB_APPLICATION_NAME}-credentials
                     key: admin-pwd
+              - name: DB_USERNAME
+                valueFrom:
+                  configMapKeyRef:
+                    name: mlbparks
+                    key: db.user
+              - name: DB_PASSWORD
+                valueFrom:
+                  configMapKeyRef:
+                    name: mlbparks
+                    key: db.password
+              - name: DB_NAME
+                valueFrom:
+                  configMapKeyRef:
+                    name: mlbparks
+                    key: db.name
             ports:
               - containerPort: 27017
                 protocol: TCP
             imagePullPolicy: IfNotPresent
+            lifecycle:
+              postStart:
+                exec:
+                  command:
+                    - sh
+                    - '-c'
+                    - >-
+                      sleep 60 && mongosh -u admin -p secret
+                      --authenticationDatabase admin --eval 'use mlbparksapp'
+                      --eval 'db.createUser({user: "mlbparksapp", pwd: "keepsafe",
+                      roles: [{ role: "dbAdmin", db: "mlbparksapp" },{
+                      role:"readWrite", db: "mlbparksapp" }]})' --quiet
             volumeMounts:
               - name: mongodb-1
                 mountPath: /data/configdb
               - name: mongodb-2
                 mountPath: /data/db
+              # - name: init-scripts
+              #   mountPath: /scripts
             terminationMessagePolicy: File
             image: registry.hub.docker.com/library/mongo:6.0.4
         restartPolicy: Always
@@ -207,10 +242,7 @@ objects:
         schedulerName: default-scheduler
         imagePullSecrets: []
     strategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 25%
-        maxUnavailable: 25%
+      type: Recreate
 
 - kind: ImageStream
   apiVersion: v1
@@ -273,11 +305,12 @@ objects:
     annotations:
       app.openshift.io/vcs-uri: https://github.com/openshift-roadshow/mlbparks.git
       app.openshift.io/vcs-ref: master
+      app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${MONGODB_APPLICATION_NAME}"}]'
     labels:
       app: workshop
       component: mlbparks
       role: backend
-      app.kubernetes.io/part-of: workshop
+      app.kubernetes.io/part-of: mlbparks
       app.kubernetes.io/name: eap
   spec:
     strategy:

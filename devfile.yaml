@@ -4,7 +4,7 @@ metadata:
 projects:
   - name: mlbparks
     source:
-      location: 'https://github.com/openshift-roadshow/mlbparks.git'
+      location: 'https://github.com/atarazana/mlbparks.git'
       startPoint: master
       type: git
 components:
