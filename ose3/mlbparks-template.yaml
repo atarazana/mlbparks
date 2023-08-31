@@ -53,24 +53,6 @@ parameters:
   name: MONGODB_DATABASE
   value: mlbparksapp
   required: true
-# - description: Database user name
-#   displayName: Database user name
-#   name: MONGODB_USER
-#   from: user[a-zA-Z0-9]{3}
-#   generate: expression
-#   required: true
-# - description: Database user password
-#   displayName: Database user password
-#   name: MONGODB_PASSWORD
-#   from: "[a-zA-Z0-9]{8}"
-#   generate: expression
-#   required: true
-# - description: Database admin password
-#   displayName: Database admin password
-#   name: MONGODB_ADMIN_PASSWORD
-#   from: "[a-zA-Z0-9]{8}"
-#   generate: expression
-#   required: true
 - description: Github trigger secret
   displayName: GitHub Trigger
   name: GITHUB_TRIGGER_SECRET
@@ -129,21 +111,6 @@ objects:
       deployment: ${MONGODB_APPLICATION_NAME}
     type: ClusterIP
     sessionAffinity: None
-# - kind: ConfigMap
-#   apiVersion: v1
-#   metadata:
-#     name: mongo-init-scripts
-#   data:
-#     init.sh: |
-#       db = db.getSiblingDB('$3');
-#       db.createUser({
-#         user: '$1',
-#         pwd: '$2',
-#         roles: [
-#           { role: 'readWrite', db: '$3' },
-#           { role: 'dbAdmin', db: '$3' }
-#         ]
-#       });
 - kind: Deployment
   apiVersion: apps/v1
   metadata:
@@ -153,7 +120,7 @@ objects:
     name: ${MONGODB_APPLICATION_NAME}
     labels:
       app: workshop
-      app.kubernetes.io/part-of: mlbparks
+      app.kubernetes.io/part-of: workshop
       app.kubernetes.io/instance: ${MONGODB_APPLICATION_NAME}
       app.kubernetes.io/component: ${MONGODB_APPLICATION_NAME}
       app.openshift.io/runtime: mongodb
@@ -310,7 +277,7 @@ objects:
       app: workshop
       component: mlbparks
       role: backend
-      app.kubernetes.io/part-of: mlbparks
+      app.kubernetes.io/part-of: workshop
       app.kubernetes.io/name: eap
   spec:
     strategy:
