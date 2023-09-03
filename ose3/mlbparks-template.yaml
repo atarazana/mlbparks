@@ -188,11 +188,12 @@ objects:
                     - sh
                     - '-c'
                     - >-
-                      sleep 60 && mongosh -u admin -p secret
-                      --authenticationDatabase admin --eval 'use mlbparksapp'
-                      --eval 'db.createUser({user: "mlbparksapp", pwd: "keepsafe",
-                      roles: [{ role: "dbAdmin", db: "mlbparksapp" },{
-                      role:"readWrite", db: "mlbparksapp" }]})' --quiet
+                      sleep 60 && mongosh -u ${MONGO_INITDB_ROOT_USERNAME} -p
+                      ${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin
+                      --eval "use ${DB_NAME}" --eval 'db.createUser({user:
+                      "'${DB_USERNAME}'", pwd: "'${DB_PASSWORD}'", roles: [{ role:
+                      "dbAdmin", db: "'${DB_NAME}'" },{ role:"readWrite", db:
+                      "'${DB_NAME}'" }]})' --quiet
             volumeMounts:
               - name: mongodb-1
                 mountPath: /data/configdb
