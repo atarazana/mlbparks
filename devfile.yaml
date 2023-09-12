@@ -53,7 +53,7 @@ commands:
       workingDir: ${PROJECTS_ROOT}/mlbparks
     id: build
   - exec:
-      commandLine: mvn clean install && sleep 2 && cp target/*.war /opt/eap/standalone/deployments/ROOT.war
+      commandLine: mvn clean install && sleep 2 && cp target/*.war /deployments/ROOT.war && . env.sh && /usr/local/s2i/run
       component: maven
       label: 2. Hot update
       workingDir: ${PROJECTS_ROOT}/mlbparks
