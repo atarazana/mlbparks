@@ -6,10 +6,17 @@
   "configurations": [
     {
       "type": "java",
+      "name": "MongoDBConnection",
+      "request": "launch",
+      "mainClass": "com.openshift.evg.roadshow.db.MongoDBConnection",
+      "projectName": "mlbparks"
+    },
+    {
+      "type": "java",
       "name": "Debug (Attach) - Remote",
       "request": "attach",
       "hostName": "localhost",
       "port": 8787
     }
-    ]
+  ]
 }

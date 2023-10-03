@@ -78,14 +78,14 @@ endpoint for the internal Jenkins service.
    oc login -u developer
    ```
 
-3. Add Jenkins to your project: 
+3. Add Jenkins to your project:
 
    ```
    oc new-app openshift/jenkins-ephemeral -p MEMORY_LIMIT=1Gi
    ```
 
 4. [Optional] If your cluster is not externally accessible (if for example, you started it locally with `cluster up`): 
-   1. Expose the jenkins service externally (for GitHub webhooks) with ngrok: 
+   1. Expose the jenkins service externally (for GitHub webhooks) with ngrok:
 
       ```
       oc new-app -f https://raw.githubusercontent.com/csrwng/ngrok/master/openshift/ngrok-template.yaml -p HOST=jenkins -p PORT=80
